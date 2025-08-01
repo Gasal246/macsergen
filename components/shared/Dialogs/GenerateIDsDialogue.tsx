@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -53,8 +53,7 @@ const GenerateIDsDialogue = ({ moduleList }: { moduleList: any[] }) => {
     };
     return (
         <Dialog open={generateIdsModal} onOpenChange={() => dispatch(storeGenerateIdsModal(false))}>
-            {/* <DialogTrigger asChild>{trigger}</DialogTrigger> */}
-            <DialogContent className='bg-zinc-800/80 backdrop-blur-sm min-w-[60%]'>
+            <DialogContent className='bg-zinc-800/80 backdrop-blur-sm min-w-[50%]'>
                 <DialogHeader>
                     <DialogTitle className='text-white'>Generate IDs</DialogTitle>
                     <DialogDescription>Please fill the form below to generate IDs.</DialogDescription>
