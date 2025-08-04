@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ApplicationState {
-    modelName: string;
+    moduleName: string;
+    moduleSuffix: string;
     isEdit: boolean;
     moduleId: string;
     moduleModal: boolean;
@@ -9,7 +10,8 @@ interface ApplicationState {
 }
 
 const initialState: ApplicationState = {
-    modelName: "",
+    moduleName: "",
+    moduleSuffix: "",
     isEdit: false,
     moduleId: "",
     moduleModal: false,
@@ -20,8 +22,11 @@ const applicationSlice = createSlice({
     name: 'application',
     initialState,
     reducers: {
-        storeModelName: (state, action: PayloadAction<string>) => {
-            state.modelName = action.payload;
+        storeModuleName: (state, action: PayloadAction<string>) => {
+            state.moduleName = action.payload;
+        },
+        storeModuleSuffix: (state, action: PayloadAction<string>) => {
+            state.moduleSuffix = action.payload;
         },
         storeIsEdit: (state, action: PayloadAction<boolean>) => {
             state.isEdit = action.payload;
@@ -39,7 +44,8 @@ const applicationSlice = createSlice({
 });
 
 export const {
-    storeModelName,
+    storeModuleName,
+    storeModuleSuffix,
     storeIsEdit,
     storeModuleId,
     storeModuleModal,

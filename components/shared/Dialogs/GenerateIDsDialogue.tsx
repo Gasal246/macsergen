@@ -20,7 +20,7 @@ const formSchema = z.object({
     module_id: z.string().min(2, {
         message: "Module name must be at least 2 characters.",
     }),
-    count: z.number().min(1, {
+    count: z.string().min(1, {
         message: "Count must be at least 1.",
     }),
     isNew: z.boolean(),
@@ -28,6 +28,8 @@ const formSchema = z.object({
 
 
 const GenerateIDsDialogue = ({ moduleList }: { moduleList: any[] }) => {
+    const [generated, setGenerated] = useState<any>(null);
+    const [saved, setIsSaved] = useState(false);
     const { generateIdsModal } = useSelector((state: RootState) => state.application);
     const dispatch = useDispatch<AppDispatch>();
     const [loading, setLoading] = useState(false);
@@ -36,7 +38,7 @@ const GenerateIDsDialogue = ({ moduleList }: { moduleList: any[] }) => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             module_id: "",
-            count: 0,
+            count: "",
             isNew: true,
         },
     });
@@ -44,21 +46,59 @@ const GenerateIDsDialogue = ({ moduleList }: { moduleList: any[] }) => {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setLoading(true)
         try {
-
+            const res = await axios.post(`/api/generateid`, values);
+            if(res?.status === 200) {
+                toast.success("IDs generated successfully")
+                setGenerated(res.data?.generated);
+                setIsSaved(false);
+            }
         } catch (error) {
             toast.error("Something went wrong")
         } finally {
             setLoading(false)
         }
     };
+
+    const handleSaveIds = async () => {
+        setLoading(true)
+        try {
+            const res = await axios.post(`/api/saveids`, {
+                module_id: form.getValues().module_id,
+                isNew: form.getValues().isNew,
+                macIds: generated?.macIds,
+                serialNumbers: generated?.serialNumbers,
+            });
+            if(res?.status === 200) {
+                toast.success("IDs saved successfully")
+                setIsSaved(true);
+                handleCloseDialoge();
+            }
+        } catch (error) {
+            toast.error("Something went wrong")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleCloseDialoge = () => {
+        if(generated && !saved) {
+            const result = confirm("Are you sure want to close without saving? You will lose your generated IDs.")
+            if(!result) return;
+        }
+        dispatch(storeGenerateIdsModal(false))
+        form.reset()
+        setGenerated(null)
+        setIsSaved(false)
+    };
+
     return (
-        <Dialog open={generateIdsModal} onOpenChange={() => dispatch(storeGenerateIdsModal(false))}>
-            <DialogContent className='bg-zinc-800/80 backdrop-blur-sm min-w-[50%]'>
+        <Dialog open={generateIdsModal} onOpenChange={handleCloseDialoge}>
+            <DialogContent className='bg-zinc-800/30 backdrop-blur-sm min-w-[50%]'>
                 <DialogHeader>
-                    <DialogTitle className='text-white'>Generate IDs</DialogTitle>
-                    <DialogDescription>Please fill the form below to generate IDs.</DialogDescription>
+                    <DialogTitle className='text-white'>{generated ? `Generated ${generated?.macIds?.length} IDs` : "Generate IDs"}</DialogTitle>
+                    <DialogDescription className='text-neutral-400'>{generated ? "Dispalying generated IDs for this module." : "Please fill the form below to generate IDs."}</DialogDescription>
                 </DialogHeader>
-                <div>
+                {!generated && <div>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
                             <FormField
@@ -126,7 +166,40 @@ const GenerateIDsDialogue = ({ moduleList }: { moduleList: any[] }) => {
                             </Button>
                         </form>
                     </Form>
-                </div>
+                </div>}
+                {generated && <div>
+                    <div className="flex flex-wrap">
+                        <div className="w-1/2 p-2">
+                            <h1 className="text-white text-2xl font-bold text-center">Mac IDs</h1>
+                            <div className="flex flex-wrap">
+                                {generated?.macIds?.map((macId: string, index: number) => (
+                                    <div key={index} className="w-1/2 p-2">
+                                        <p className="text-white">{macId}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="w-1/2 p-2 lg:border-l lg:border-neutral-300">
+                            <h1 className="text-white text-2xl font-bold text-center">Serial Numbers</h1>
+                            <div className="flex flex-wrap">
+                                {generated?.serialNumbers?.map((serialNumber: string, index: number) => (
+                                    <div key={index} className="w-1/2 p-2">
+                                        <p className="text-white">{serialNumber}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex justify-end">
+                        <Button
+                            className='bg-gradient-to-br from-neutral-800 to-neutral-900 cursor-pointer border border-transparent hover:border-slate-500'
+                            onClick={handleSaveIds}
+                            disabled={loading}
+                        >
+                            Save IDs
+                        </Button>
+                    </div>
+                </div>}
             </DialogContent>
         </Dialog>
     )

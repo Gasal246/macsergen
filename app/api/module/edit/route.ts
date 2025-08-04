@@ -7,7 +7,7 @@ connectDB();
 export async function POST ( req: NextRequest, res: NextResponse ) {
     try {
         const body = await req.json();
-        const updateModule = await Modules.findByIdAndUpdate(body.moduleId, { module_name: body.module_name })
+        const updateModule = await Modules.findByIdAndUpdate(body.moduleId, { module_name: body.module_name, suffix: body.suffix })
         return NextResponse.json({ message: "Module added successfully" }, { status: 200 });
     } catch (error) {
         console.log(error);

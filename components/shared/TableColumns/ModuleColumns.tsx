@@ -7,14 +7,15 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { storeIsEdit, storeModelName, storeModuleId, storeModuleModal } from "@/redux/slices/applicationSlice";
+import { storeIsEdit, storeModuleName, storeModuleId, storeModuleModal, storeModuleSuffix } from "@/redux/slices/applicationSlice";
 
 const EditModuleComponent = ({ module }: { module: any }) => {
     const dispatch = useDispatch<AppDispatch>();
     const handleEditModuleClick = () => {
         dispatch(storeIsEdit(true));
         dispatch(storeModuleId(module?._id || ""));
-        dispatch(storeModelName(module?.module_name || ""));
+        dispatch(storeModuleName(module?.module_name || ""));
+        dispatch(storeModuleSuffix(module?.suffix || ""));
         dispatch(storeModuleModal(true));
     }
     return (
@@ -68,6 +69,28 @@ export const moduleColumns: ColumnDef<any>[] = [
         },
     },
     {
+        accessorKey: "suffix",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Module Suffix
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const module: any = row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-center">{module?.suffix}</span>
+                </div>
+            )
+        },
+    },
+    {
         accessorKey: "createdAt",
         header: ({ column }) => {
             return (
@@ -85,28 +108,6 @@ export const moduleColumns: ColumnDef<any>[] = [
             return (
                 <div className="flex items-center gap-2">
                     <span>{module?.createdAt}</span>
-                </div>
-            )
-        },
-    },
-    {
-        accessorKey: "g_id_count",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Generated IDs Count
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-        cell: ({ row }) => {
-            const module: any = row.original
-            return (
-                <div className="flex items-center gap-2">
-                    <span>{module?.g_id_count}</span>
                 </div>
             )
         },

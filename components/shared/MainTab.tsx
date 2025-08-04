@@ -7,7 +7,7 @@ import { moduleColumns } from './TableColumns/ModuleColumns';
 import AddModulesDialogue from './Dialogs/AddModulesDialogue'
 import { Provider, useDispatch } from 'react-redux';
 import { AppDispatch, store } from '@/redux/store';
-import { storeGenerateIdsModal, storeIsEdit, storeModelName, storeModuleId, storeModuleModal } from '@/redux/slices/applicationSlice'
+import { storeGenerateIdsModal, storeIsEdit, storeModuleName, storeModuleId, storeModuleModal, storeModuleSuffix } from '@/redux/slices/applicationSlice'
 import axios from 'axios'
 import LoaderSpin from './Utility/LoaderSpin'
 import { GeneratedIdTable } from './DataTables/GenerateIdTable'
@@ -19,7 +19,8 @@ const AddModuleButton = () => {
   const hanldeOpenAddModuleModal = () => {
     dispatch(storeIsEdit(false))
     dispatch(storeModuleId(""))
-    dispatch(storeModelName(""))
+    dispatch(storeModuleName(""))
+    dispatch(storeModuleSuffix(""))
     dispatch(storeModuleModal(true))
   }
   return (
