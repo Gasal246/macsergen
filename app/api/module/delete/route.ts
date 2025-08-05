@@ -22,7 +22,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
         await Serial_numbers.deleteMany({ _id: { $in: removableSerialNumbers?.map((item: any) => item?._id) } });
 
         await Modules.findByIdAndDelete(body.moduleId);
-        return NextResponse.json({ message: "Module deleted successfully" }, { status: 200 });
+        return NextResponse.json({ message: "Module deleted successfully", success: true }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

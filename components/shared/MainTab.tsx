@@ -80,7 +80,7 @@ const MainTab = () => {
       <Tabs defaultValue={value} onValueChange={(value) => setValue(value)}>
         <TabsList className="grid w-full grid-cols-2 bg-gradient-to-br from-neutral-500 to-neutral-600 h-14">
           <TabsTrigger value="modules" className={`text-[16px] font-semibold text-white`}>Added Modules</TabsTrigger>
-          <TabsTrigger value="generateds" className={`text-[16px] font-semibold text-white`}>Generated IDs</TabsTrigger>
+          {/* <TabsTrigger value="generateds" className={`text-[16px] font-semibold text-white`}>Generated IDs</TabsTrigger> */}
         </TabsList>
         <TabsContent value="modules" className='bg-gradient-to-br from-neutral-400 to-neutral-600 min-h-[75dvh] p-4 rounded-lg pb-10 overflow-x-hidden overflow-y-scroll'>
           <div className='w-full p-4'>

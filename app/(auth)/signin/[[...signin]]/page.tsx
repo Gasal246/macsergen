@@ -103,7 +103,7 @@ const SigninPage = () => {
                 <FormItem>
                   <FormLabel className='text-xs font-medium text-neutral-300'>User Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="password" className='text-neutral-200' {...field} />
+                    <Input placeholder="password" type="password" className='text-neutral-200' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

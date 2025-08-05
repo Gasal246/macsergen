@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { storeApType, storeChipset, storeDeleteModuleModal, storeDescription, storeIsEdit, storeModelNumber, storeModuleId, storeModuleModal, storeQty, storeSuffix } from "@/redux/slices/applicationSlice";
+import { useRouter } from "next/navigation";
 
 const EditModuleComponent = ({ module }: { module: any }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -220,7 +221,7 @@ export const moduleColumns: ColumnDef<any>[] = [
         header: "Actions",
         cell: ({ row }) => {
             const module: any = row.original
-
+            const router = useRouter()
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -237,7 +238,7 @@ export const moduleColumns: ColumnDef<any>[] = [
                             Copy module ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View module</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push(`/module/${module?._id}`)}>View module</DropdownMenuItem>
                         <EditModuleComponent module={module} />
                         <DeleteModuleComponent module={module} />
                     </DropdownMenuContent>
