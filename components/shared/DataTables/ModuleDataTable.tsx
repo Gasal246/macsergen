@@ -50,10 +50,10 @@ export function ModuleDataTable<TData, TValue>({
         <div>
             <div className="flex items-center py-4">
         <Input
-          placeholder="Filter module name..."
-          value={(table.getColumn("module_name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter model number..."
+          value={(table.getColumn("model_number")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("module_name")?.setFilterValue(event.target.value)
+            table.getColumn("model_number")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -95,7 +95,7 @@ export function ModuleDataTable<TData, TValue>({
                     ) : (
                         <TableRow>
                             <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No modules added.
+                                No modules found.
                             </TableCell>
                         </TableRow>
                     )}

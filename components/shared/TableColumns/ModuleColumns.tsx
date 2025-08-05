@@ -7,19 +7,34 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { storeIsEdit, storeModuleName, storeModuleId, storeModuleModal, storeModuleSuffix } from "@/redux/slices/applicationSlice";
+import { storeApType, storeChipset, storeDeleteModuleModal, storeDescription, storeIsEdit, storeModelNumber, storeModuleId, storeModuleModal, storeQty, storeSuffix } from "@/redux/slices/applicationSlice";
 
 const EditModuleComponent = ({ module }: { module: any }) => {
     const dispatch = useDispatch<AppDispatch>();
     const handleEditModuleClick = () => {
-        dispatch(storeIsEdit(true));
+        dispatch(storeIsEdit(true)); // edit mode "true"
         dispatch(storeModuleId(module?._id || ""));
-        dispatch(storeModuleName(module?.module_name || ""));
-        dispatch(storeModuleSuffix(module?.suffix || ""));
-        dispatch(storeModuleModal(true));
+        dispatch(storeModelNumber(module?.model_number || ""));
+        dispatch(storeSuffix(module?.suffix || ""));
+        dispatch(storeChipset(module?.chipset || ""));
+        dispatch(storeApType(module?.ap_type || ""));
+        dispatch(storeDescription(module?.description || ""));
+        dispatch(storeQty(module?.qty || 0));
+        dispatch(storeModuleModal(true)); // add or edit dialog
     }
     return (
         <DropdownMenuItem onClick={handleEditModuleClick}>Edit module</DropdownMenuItem>
+    )
+}
+
+const DeleteModuleComponent = ({ module }: { module: any }) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const handlePressDeleteModule = () => {
+        dispatch(storeDeleteModuleModal(true))
+        dispatch(storeModuleId(module?._id || ""))
+    }
+    return (
+        <DropdownMenuItem onClick={handlePressDeleteModule}>Delete module</DropdownMenuItem>
     )
 }
 
@@ -47,14 +62,14 @@ export const moduleColumns: ColumnDef<any>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "module_name",
+        accessorKey: "model_number",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Module Name
+                    Model Number
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -63,7 +78,7 @@ export const moduleColumns: ColumnDef<any>[] = [
             const module: any = row.original
             return (
                 <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-center">{module?.module_name}</span>
+                    <span className="text-sm font-semibold text-center">{module?.model_number}</span>
                 </div>
             )
         },
@@ -76,7 +91,7 @@ export const moduleColumns: ColumnDef<any>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Module Suffix
+                    Suffix SN
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -91,14 +106,14 @@ export const moduleColumns: ColumnDef<any>[] = [
         },
     },
     {
-        accessorKey: "createdAt",
+        accessorKey: "description",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Created Date
+                    Description
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -107,7 +122,95 @@ export const moduleColumns: ColumnDef<any>[] = [
             const module: any = row.original
             return (
                 <div className="flex items-center gap-2">
-                    <span>{module?.createdAt}</span>
+                    <span className="text-sm font-semibold text-center">{module?.description}</span>
+                </div>
+            )
+        },
+    },
+    {
+        accessorKey: "chipset",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Chipset
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const module: any = row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-center uppercase">{module?.chipset}</span>
+                </div>
+            )
+        },
+    },
+    {
+        accessorKey: "ap_type",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Type
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const module: any = row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-center capitalize">{module?.ap_type}</span>
+                </div>
+            )
+        },
+    },
+    {
+        accessorKey: "assigned_count",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Assigned
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const module: any = row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-center capitalize">{module?.assigned_count}</span>
+                </div>
+            )
+        },
+    },
+    {
+        accessorKey: "unallocated_count",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Unallocated
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const module: any = row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-center capitalize">{module?.unallocated_count}</span>
                 </div>
             )
         },
@@ -136,6 +239,7 @@ export const moduleColumns: ColumnDef<any>[] = [
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>View module</DropdownMenuItem>
                         <EditModuleComponent module={module} />
+                        <DeleteModuleComponent module={module} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

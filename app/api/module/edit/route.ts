@@ -7,11 +7,18 @@ connectDB();
 export async function POST ( req: NextRequest, res: NextResponse ) {
     try {
         const body = await req.json();
-        const updateModule = await Modules.findByIdAndUpdate(body.moduleId, { module_name: body.module_name, suffix: body.suffix })
-        return NextResponse.json({ message: "Module added successfully" }, { status: 200 });
+        await Modules.findByIdAndUpdate(body.moduleId, { 
+            model_number: body.modal_number, 
+            suffix: body.suffix,
+            description: body.description,
+            qty: body.qty,
+            chipset: body.chipset,
+            ap_type: body.ap_type 
+        }, { new: true });
+        return NextResponse.json({ message: "Module updated successfully" }, { status: 200 });
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ message: "Module added failed" }, { status: 500 });
+        return NextResponse.json({ message: "Module updated failed" }, { status: 500 });
     }
 }
 

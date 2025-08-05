@@ -7,20 +7,19 @@ import { moduleColumns } from './TableColumns/ModuleColumns';
 import AddModulesDialogue from './Dialogs/AddModulesDialogue'
 import { Provider, useDispatch } from 'react-redux';
 import { AppDispatch, store } from '@/redux/store';
-import { storeGenerateIdsModal, storeIsEdit, storeModuleName, storeModuleId, storeModuleModal, storeModuleSuffix } from '@/redux/slices/applicationSlice'
+import { storeGenerateIdsModal, storeIsEdit, storeModuleId, storeModuleModal } from '@/redux/slices/applicationSlice'
 import axios from 'axios'
 import LoaderSpin from './Utility/LoaderSpin'
 import { GeneratedIdTable } from './DataTables/GenerateIdTable'
 import { generateIdColumns } from './TableColumns/GenerateIdColumns'
 import GenerateIDsDialogue from './Dialogs/GenerateIDsDialogue'
+import DeleteModuleComponent from './Dialogs/DeleteModuleComponent'
 
 const AddModuleButton = () => {
   const dispatch = useDispatch<AppDispatch>();
   const hanldeOpenAddModuleModal = () => {
     dispatch(storeIsEdit(false))
     dispatch(storeModuleId(""))
-    dispatch(storeModuleName(""))
-    dispatch(storeModuleSuffix(""))
     dispatch(storeModuleModal(true))
   }
   return (
@@ -77,6 +76,7 @@ const MainTab = () => {
     <Provider store={store}>
       <AddModulesDialogue getModulesFunction={getList} />
       <GenerateIDsDialogue moduleList={modules} />
+      <DeleteModuleComponent getModulesFunction={getList} />
       <Tabs defaultValue={value} onValueChange={(value) => setValue(value)}>
         <TabsList className="grid w-full grid-cols-2 bg-gradient-to-br from-neutral-500 to-neutral-600 h-14">
           <TabsTrigger value="modules" className={`text-[16px] font-semibold text-white`}>Added Modules</TabsTrigger>
@@ -85,7 +85,10 @@ const MainTab = () => {
         <TabsContent value="modules" className='bg-gradient-to-br from-neutral-400 to-neutral-600 min-h-[75dvh] p-4 rounded-lg pb-10 overflow-x-hidden overflow-y-scroll'>
           <div className='w-full p-4'>
             <div className="flex justify-between items-center">
-              <h1 className="text-[16px] font-bold text-neutral-900 underline">Modules or Device Types</h1>
+              <div className="">
+                <h1 className="text-[18px] font-bold text-black">Added Modules</h1>
+                <p className="text-[14px] text-neutral-800 font-medium">All modules added & count of <u>assigned</u> & <u>unallocated</u> IDs.</p>
+              </div>
               <AddModuleButton />
             </div>
             <div className='mt-3'>

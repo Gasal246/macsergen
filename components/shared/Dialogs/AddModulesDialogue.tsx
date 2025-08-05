@@ -13,32 +13,53 @@ import { AppDispatch, RootState } from '@/redux/store';
 import axios from 'axios';
 import { storeModuleModal } from '@/redux/slices/applicationSlice';
 import { toast } from 'sonner';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const formSchema = z.object({
-  module_name: z.string().min(2, {
+  modal_number: z.string().min(2, {
     message: "Module name must be at least 2 characters.",
   }),
-  module_suffix: z.string().min(3, {
+  suffix: z.string().min(3, {
     message: "Module Suffix must be at least 3 characters."
+  }),
+  description: z.string().min(3, {
+    message: "Module Description must be at least 3 characters."
+  }),
+  qty: z.number().min(1, {
+    message: "Module Qty must be at least 1."
+  }),
+  chipset: z.string().min(3, {
+    message: "Module Chipset must be at least 3 characters."
+  }),
+  ap_type: z.string().min(3, {
+    message: "Module AP Type must be at least 3 characters."
   })
 })
 const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => void }) => {
-  const { isEdit, moduleName, moduleSuffix, moduleId, moduleModal } = useSelector((state: RootState) => state.application);
+  const { isEdit, modelNumber, suffix, description, qty, chipset, ap_type, moduleId, moduleModal } = useSelector((state: RootState) => state.application);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      module_name: moduleName,
-      module_suffix: moduleSuffix,
+      modal_number: modelNumber,
+      suffix: suffix,
+      description: description,
+      qty: qty,
+      chipset: chipset,
+      ap_type: ap_type,
     },
   })
 
   useEffect(() => {
     if (isEdit) {
-      form.setValue("module_name", moduleName);
-      form.setValue("module_suffix", moduleSuffix);
+      form.setValue("modal_number", modelNumber);
+      form.setValue("suffix", suffix);
+      form.setValue("description", description);
+      form.setValue("qty", qty);
+      form.setValue("chipset", chipset);
+      form.setValue("ap_type", ap_type);
     } else {
       form.reset()
     }
@@ -50,10 +71,14 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
       if (isEdit) {
         const res = await axios.post(`/api/module/edit`, {
           moduleId,
-          module_name: values.module_name,
-          suffix: values.module_suffix
+          model_number: values.modal_number,
+          suffix: values.suffix,
+          description: values.description,
+          qty: values.qty,
+          chipset: values.chipset,
+          ap_type: values.ap_type
         });
-        if(res?.status === 200) {
+        if (res?.status === 200) {
           toast.success("Module updated successfully");
           getModulesFunction();
         }
@@ -61,7 +86,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
         return
       }
       const res = await axios.post('/api/module/add', values);
-      if(res?.status === 200) {
+      if (res?.status === 200) {
         toast.success("Module added successfully");
         getModulesFunction();
       }
@@ -75,7 +100,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
 
   return (
     <Dialog open={moduleModal} onOpenChange={() => dispatch(storeModuleModal(false))}>
-      <DialogContent className='bg-zinc-800/30 backdrop-blur-sm lg:min-w-[50%]'>
+      <DialogContent className='bg-zinc-800/30 backdrop-blur-sm lg:min-w-[50%] max-h-[80%] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle className='text-white'>{isEdit ? "Edit" : "Add"} Module</DialogTitle>
           <DialogDescription>Please {isEdit ? "fill" : "update"} the form below to {isEdit ? "edit" : "add"} {isEdit ? "this" : "a new"} module.</DialogDescription>
@@ -85,15 +110,15 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
                 control={form.control}
-                name="module_name"
+                name="modal_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-white'>Module Name</FormLabel>
+                    <FormLabel className='text-white'>Modal Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="Module Name" className='text-white' {...field} />
+                      <Input placeholder="Modal Number" className='text-white' {...field} />
                     </FormControl>
                     <FormDescription className='text-neutral-400 text-xs font-semibold'>
-                      Module name is used to identify the module in the system.
+                      Modal number is used to identify the module in the system.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -101,7 +126,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
               />
               <FormField
                 control={form.control}
-                name="module_suffix"
+                name="suffix"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className='text-white'>Module Suffix</FormLabel>
@@ -111,6 +136,75 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
                     <FormDescription className='text-neutral-400 text-xs font-semibold'>
                       Module suffix is used to generate serial numbers, and it is also used to identify the module.
                     </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-white'>Module Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Module Description" className='text-white' {...field} />
+                    </FormControl>
+                    <FormDescription className='text-neutral-400 text-xs font-semibold'>
+                      Module description is used to describe the module in the system.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="qty"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-white'>Module Qty</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Module Qty" className='text-white' type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                    </FormControl>
+                    <FormDescription className='text-neutral-400 text-xs font-semibold'>
+                      Module qty is used to know the existing quantity of the module.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="chipset"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-white'>Module Chipset</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Module Chipset" className='text-white' {...field} />
+                    </FormControl>
+                    <FormDescription className='text-neutral-400 text-xs font-semibold'>
+                      Module chipset is used to identify the chipset of the module.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="ap_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-white'>Select Module Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl className='w-full lg:w-[50%] text-white'>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select AP Type" className='text-white' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="indoor">Indoor</SelectItem>
+                        <SelectItem value="outdoor">Outdoor</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

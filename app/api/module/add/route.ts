@@ -8,7 +8,14 @@ export async function POST ( req: NextRequest, res: NextResponse ) {
     try {
         const body = await req.json();
         console.log(body);
-        const newModule = new Modules({ module_name: body.module_name, suffix: body.module_suffix });
+        const newModule = new Modules({ 
+            model_number: body.modal_number, 
+            suffix: body.suffix,
+            description: body.description,
+            qty: body.qty,
+            chipset: body.chipset,
+            ap_type: body.ap_type 
+        });
         await newModule.save();
         return NextResponse.json({ message: "Module added successfully" }, { status: 200 });
     } catch (error) {

@@ -1,32 +1,54 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ApplicationState {
-    moduleName: string;
-    moduleSuffix: string;
+    modelNumber: string;
+    suffix: string;
+    description: string;
+    qty: number;
+    chipset: string;
+    ap_type: string;
     isEdit: boolean;
     moduleId: string;
     moduleModal: boolean;
     generateIdsModal: boolean;
+    deleteModuleModal: boolean;
 }
 
 const initialState: ApplicationState = {
-    moduleName: "",
-    moduleSuffix: "",
+    modelNumber: "",
+    suffix: "",
+    description: "",
+    qty: 0,
+    chipset: "",
+    ap_type: "",
     isEdit: false,
     moduleId: "",
     moduleModal: false,
     generateIdsModal: false,
+    deleteModuleModal: false,
 }
 
 const applicationSlice = createSlice({
     name: 'application',
     initialState,
     reducers: {
-        storeModuleName: (state, action: PayloadAction<string>) => {
-            state.moduleName = action.payload;
+        storeModelNumber: (state, action: PayloadAction<string>) => {
+            state.modelNumber = action.payload;
         },
-        storeModuleSuffix: (state, action: PayloadAction<string>) => {
-            state.moduleSuffix = action.payload;
+        storeSuffix: (state, action: PayloadAction<string>) => {
+            state.suffix = action.payload;
+        },
+        storeDescription: (state, action: PayloadAction<string>) => {
+            state.description = action.payload;
+        },
+        storeQty: (state, action: PayloadAction<number>) => {
+            state.qty = action.payload;
+        },
+        storeChipset: (state, action: PayloadAction<string>) => {
+            state.chipset = action.payload;
+        },
+        storeApType: (state, action: PayloadAction<string>) => {
+            state.ap_type = action.payload;
         },
         storeIsEdit: (state, action: PayloadAction<boolean>) => {
             state.isEdit = action.payload;
@@ -39,17 +61,25 @@ const applicationSlice = createSlice({
         },
         storeModuleModal: (state, action: PayloadAction<boolean>) => {
             state.moduleModal = action.payload;
+        },
+        storeDeleteModuleModal: (state, action: PayloadAction<boolean>) => {
+            state.deleteModuleModal = action.payload;
         }
     },
 });
 
 export const {
-    storeModuleName,
-    storeModuleSuffix,
+    storeModelNumber,
+    storeSuffix,
+    storeDescription,
+    storeQty,
+    storeChipset,
+    storeApType,
     storeIsEdit,
     storeModuleId,
     storeModuleModal,
-    storeGenerateIdsModal
+    storeGenerateIdsModal,
+    storeDeleteModuleModal
 } = applicationSlice.actions;
 
 export default applicationSlice.reducer;
