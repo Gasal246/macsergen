@@ -1,11 +1,11 @@
 import connectDB from "@/lib/mongo";
 import Mac_addresses from "@/models/mac_addresses.model";
 import Modules from "@/models/modules.model";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 connectDB();
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET() {
   try {
     const modules = await Modules.find();
     const moduleIds = modules.map((item: any) => item._id);

@@ -5,7 +5,7 @@ import { generateDeviceIdentifiers } from "@/lib/jsutils";
 
 connectDB();
 
-export async function POST ( req: NextRequest, res: NextResponse ) {
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
@@ -25,15 +25,15 @@ export async function POST ( req: NextRequest, res: NextResponse ) {
                 suffix: module?.suffix || '',
                 regionId: body?.regionId
             });
+        } else {
+            generated = generateDeviceIdentifiers({
+                count: body?.count,
+                lastMac: null,
+                lastSerial: null,
+                suffix: module?.suffix || '',
+                regionId: body?.regionId
+            });
         }
-
-        generated = generateDeviceIdentifiers({
-            count: body?.count,
-            lastMac: null,
-            lastSerial: null,
-            suffix: module?.suffix || '',
-            regionId: body?.regionId
-        });
 
         return NextResponse.json({ generated }, { status: 200 });
     } catch (error) {

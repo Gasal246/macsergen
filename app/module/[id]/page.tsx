@@ -1,11 +1,8 @@
-import ViewModule from '@/components/shared/ViewModule'
-import { redirect } from 'next/navigation'
+import ViewModule from '@/components/shared/ViewModule';
 import React from 'react'
 
-const ModulePage = ({ params }: { params: { id: string }}) => {
-  return (
-    <ViewModule id={params.id} />
-  )
+export default function ModulePage({ params }: any) {
+  return <ViewModule id={params.id} />;
 }
 
-export default ModulePage
+export const dynamic = 'force-dynamic'

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 connectDB();
 
-export async function POST ( req: NextRequest, res: NextResponse ) {
+export async function POST ( req: NextRequest ) {
     try {
         const body = await req.json();
         const module = await Modules.findById(body?.module_id);

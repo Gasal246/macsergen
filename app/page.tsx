@@ -2,7 +2,7 @@ import MainTab from "@/components/shared/MainTab";
 import { Toaster } from "@/components/ui/sonner";
 import SessionProvider from "@/lib/SessionProvider";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "@/auth";
 import { redirect } from 'next/navigation';
 
 export default async function Home() {

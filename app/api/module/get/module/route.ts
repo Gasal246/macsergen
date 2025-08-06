@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 connectDB();
 
-export async function GET ( req: NextRequest, res: NextResponse ) {
+export async function GET ( req: NextRequest ) {
     try {
         const params = req.nextUrl.searchParams;
         const moduleId = params.get("id");
