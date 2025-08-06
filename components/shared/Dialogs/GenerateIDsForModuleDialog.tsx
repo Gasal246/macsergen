@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
@@ -8,17 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod";
 import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Switch } from '@/components/ui/switch';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
     module_id: z.string().min(2, {
@@ -34,6 +28,10 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
     const { generateIdsForModuleModal } = useSelector((state: RootState) => state.application);
     const dispatch = useDispatch<AppDispatch>();
 
+    const [loading, setLoading] = useState(false);
+    const [generated, setGenerated] = useState<any>(null);
+    const [saved, setIsSaved] = useState(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,9 +41,20 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
         },
     })
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        setLoading(true);
+        try {
+            const res = await axios.post(`/api/module/generateid`, values);
+            if(res?.status === 200) {
+                toast.success("IDs generated successfully")
+                setGenerated(res.data?.generated);
+                setIsSaved(false);
+            }
+        } catch (error) {
+            toast.error("Something went wrong")
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleCloseDialog = () => {
@@ -96,7 +105,7 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" className='bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600 w-full lg:w-[50%] lg:ml-[25%]'>Generate IDs</Button>
                         </form>
                     </Form>
                 </div>
