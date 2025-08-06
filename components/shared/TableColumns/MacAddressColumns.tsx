@@ -11,14 +11,14 @@ import { useRouter } from "next/navigation";
 
 export const macAddressColumns: ColumnDef<any>[] = [
     {
-        accessorKey: "mac_id",
+        accessorKey: "mac_address",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    MAC ID
+                    MAC Address
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -63,11 +63,12 @@ export const macAddressColumns: ColumnDef<any>[] = [
             }
             return (
                 <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold text-center`}>
+                    <span className={`text-sm font-semibold text-center flex items-center gap-2`}>
                     <Switch
                       checked={module?.used}
                       onCheckedChange={handleAllocation}
                     />
+                    <span className={`text-xs font-semibold text-center ${module?.used ? "text-green-500" : "text-neutral-800"}`}>{module?.used ? "Allocated" : "Unallocated"}</span>
                     </span>
                 </div>
             )
@@ -89,7 +90,7 @@ export const macAddressColumns: ColumnDef<any>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(module?.mac_id)}
+                            onClick={() => navigator.clipboard.writeText(module?.mac_address)}
                         >
                             Copy MAC ID
                         </DropdownMenuItem>

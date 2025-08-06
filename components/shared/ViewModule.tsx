@@ -16,6 +16,8 @@ import { storeGenerateIdsForModuleModal } from '@/redux/slices/applicationSlice'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
 import { Sheet } from 'lucide-react'
+import LoaderSpin from './Utility/LoaderSpin'
+import { generateExcel } from '@/lib/generateExcel'
 
 const GenerateIdOpener = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +34,7 @@ const ViewModule = ({ id }: { id: string }) => {
     const [macAddresses, setMacAddresses] = React.useState<any>(null);
     const [serialNumbers, setSerialNumbers] = React.useState<any>(null);
     const [loading, setLoading] = React.useState<boolean>(true);
+    const [generating, setGenerating] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         fetchModule();
@@ -51,18 +54,35 @@ const ViewModule = ({ id }: { id: string }) => {
         }
     };
 
+    const handleDownloadExcel = async () => {
+        const module_data = {
+            model_number: module?.model_number,
+            telx_model_number: module?.telx_model_number,
+            suffix: module?.suffix,
+            description: module?.description,
+            chipset: module?.chipset,
+            type: module?.type,
+            mac_allocated: module?.mac_allocated,
+            sn_allocated: module?.serial_allocated,
+        };
+
+        setGenerating(true);
+        await generateExcel(module_data, macAddresses, serialNumbers);
+        setGenerating(false);
+    };
+
     return (
         <Provider store={store}>
             <div className='p-5 lg:p-10'>
                 <GenerateIDsForModuleDialog moduleId={id} module={module} getModulesFunction={fetchModule} />
                 <div className="flex items-center justify-between">
-                    <Link href=".."><Button className='mb-5 cursor-pointer border border-transparent hover:border-neutral-600'>Back To Modules</Button></Link>
+                    <Link href=".."><Button className='mb-5 cursor-pointer border border-transparent hover:border-neutral-600'>{loading ? <div className="flex items-center gap-2"><LoaderSpin size={30} /> Loading...</div> : "Back To Modules"}</Button></Link>
                     <div className="flex items-center gap-2">
                         <GenerateIdOpener />
-                        <Button className='mb-5 cursor-pointer bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600 flex items-center gap-2'><Sheet size={20} color="white" /> Download Excel</Button>
+                        <Button className='mb-5 cursor-pointer bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600 flex items-center gap-2' onClick={handleDownloadExcel}><Sheet size={20} color="white"/> Download Excel</Button>
                     </div>
                 </div>
-                <h1 className="text-neutral-300 text-xl font-bold px-1 mb-1">Module Details</h1>
+                <h1 className="text-neutral-300 text-xl font-bold px-1 mb-1">{loading ? "Loading Data..." : "Module Details"}</h1>
                 <div className="bg-gradient-to-br from-neutral-400 to-neutral-500 p-1 rounded-lg">
                     <ModuleShowTable columns={moduleShowColumns} data={[module]} />
                 </div>

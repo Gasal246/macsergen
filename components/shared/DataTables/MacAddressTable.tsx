@@ -50,10 +50,10 @@ export function MacAddressTable<TData, TValue>({
         <div>
             <div className="flex items-center py-2">
                 <Input
-                    placeholder="Filter mac id..."
-                    value={(table.getColumn("mac_id")?.getFilterValue() as string) ?? ""}
+                    placeholder="Filter mac address..."
+                    value={(table.getColumn("mac_address")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("mac_id")?.setFilterValue(event.target.value)
+                        table.getColumn("mac_address")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm placeholder:text-neutral-800"
                 />

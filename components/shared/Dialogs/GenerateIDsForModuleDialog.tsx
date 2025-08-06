@@ -33,7 +33,6 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
 
     const [loading, setLoading] = useState(false);
     const [generated, setGenerated] = useState<any>(null);
-    const [saved, setIsSaved] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -52,7 +51,6 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
             if(res?.status === 200) {
                 toast.success("IDs generated successfully")
                 setGenerated(res.data?.generated);
-                setIsSaved(false);
             }
         } catch (error) {
             toast.error("Something went wrong")
@@ -71,10 +69,9 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
                 serialNumbers: generated?.serialNumbers,
             });
             if(res?.status === 200) {
-                toast.success("IDs saved successfully")
-                setIsSaved(true);
-                handleCloseDialog();
+                toast.success("IDs saved successfully");
                 getModulesFunction();
+                handleCloseDialog(true);
             }
         } catch (error) {
             toast.error("Something went wrong")
@@ -83,7 +80,7 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
         }
     }
 
-    const handleCloseDialog = () => {
+    const handleCloseDialog = (saved: boolean) => {
         if(generated && !saved) {
             toast.error("You haven't saved generated IDs");
             const result = confirm("Are you sure want to close without saving? You may lose your generated IDs.")
@@ -91,7 +88,6 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
         }
         form.reset()
         setGenerated(null)
-        setIsSaved(false)
         dispatch(storeGenerateIdsForModuleModal(false));
     }
 
