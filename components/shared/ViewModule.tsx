@@ -1,0 +1,85 @@
+"use client"
+import Link from 'next/link'
+import React from 'react'
+import { Button } from '../ui/button'
+import { ModuleShowTable } from './DataTables/ModuleShowTable'
+import { moduleShowColumns } from './TableColumns/ModuleShowColumn'
+import { MacAddressTable } from './DataTables/MacAddressTable'
+import { macAddressColumns } from './TableColumns/MacAddressColumns'
+import { SerialNumberTable } from './DataTables/SerialNumberTable'
+import { serialNumberColumns } from './TableColumns/SerialNumberColoumn'
+import axios from 'axios'
+import GenerateIDsForModuleDialog from './Dialogs/GenerateIDsForModuleDialog'
+import { Provider } from 'react-redux'
+import { store } from '@/redux/store'
+import { storeGenerateIdsForModuleModal } from '@/redux/slices/applicationSlice'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/redux/store'
+
+const GenerateIdOpener = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const handleOpenGenerateIdsModal = () => {
+        dispatch(storeGenerateIdsForModuleModal(true));
+    };
+    return (
+        <Button className='mb-5 cursor-pointer bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600' onClick={handleOpenGenerateIdsModal}>Generate</Button>
+    )
+}
+
+const ViewModule = ({ id }: { id: string }) => {
+    const [module, setModule] = React.useState<any>(null);
+    const [macAddresses, setMacAddresses] = React.useState<any>(null);
+    const [serialNumbers, setSerialNumbers] = React.useState<any>(null);
+    const [loading, setLoading] = React.useState<boolean>(true);
+
+    React.useEffect(() => {
+        fetchModule();
+    }, [id]);
+
+    const fetchModule = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`/api/module/get/module?id=${id}`);
+            setModule(res.data?.module);
+            setMacAddresses(res.data?.macAddresses);
+            setSerialNumbers(res.data?.serialNumbers);
+        } catch (error) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Provider store={store}>
+            <div className='p-5 lg:p-10'>
+                <GenerateIDsForModuleDialog moduleId={id} module={module} />
+                <Link href=".."><Button className='mb-5 cursor-pointer border border-transparent hover:border-neutral-600'>Back To Modules</Button></Link>
+                <h1 className="text-neutral-300 text-xl font-bold px-1 mb-1">Module Details</h1>
+                <div className="bg-gradient-to-br from-neutral-500 to-neutral-600 p-1 rounded-lg">
+                    <ModuleShowTable columns={moduleShowColumns} data={[module]} />
+                </div>
+                <div className='px-1 mb-1 mt-5 flex items-center justify-between'>
+                    <h1 className="text-neutral-300 text-xl font-semibold">MAC Addresses & Serial Numbers</h1>
+                    <GenerateIdOpener />
+                </div>
+                <div className="flex flex-wrap">
+                    <div className="w-full lg:w-1/2 p-1">
+                        <div className="bg-gradient-to-br from-neutral-500 to-neutral-600 p-2 rounded-lg">
+                            <h1 className="text-neutral-900 text-sm font-bold px-1 mb-2">MAC Addresses</h1>
+                            <MacAddressTable columns={macAddressColumns} data={macAddresses || []} />
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-1/2 p-1">
+                        <div className="bg-gradient-to-br from-neutral-500 to-neutral-600 p-2 rounded-lg">
+                            <h1 className="text-neutral-900 text-sm font-bold px-1 mb-2">Serial Numbers</h1>
+                            <SerialNumberTable columns={serialNumberColumns} data={serialNumbers || []} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Provider>
+    )
+}
+
+export default ViewModule

@@ -12,6 +12,7 @@ interface ApplicationState {
     moduleModal: boolean;
     generateIdsModal: boolean;
     deleteModuleModal: boolean;
+    generateIdsForModuleModal: boolean;
 }
 
 const initialState: ApplicationState = {
@@ -26,6 +27,7 @@ const initialState: ApplicationState = {
     moduleModal: false,
     generateIdsModal: false,
     deleteModuleModal: false,
+    generateIdsForModuleModal: false,
 }
 
 const applicationSlice = createSlice({
@@ -64,6 +66,9 @@ const applicationSlice = createSlice({
         },
         storeDeleteModuleModal: (state, action: PayloadAction<boolean>) => {
             state.deleteModuleModal = action.payload;
+        },
+        storeGenerateIdsForModuleModal: (state, action: PayloadAction<boolean>) => {
+            state.generateIdsForModuleModal = action.payload;
         }
     },
 });
@@ -79,7 +84,8 @@ export const {
     storeModuleId,
     storeModuleModal,
     storeGenerateIdsModal,
-    storeDeleteModuleModal
+    storeDeleteModuleModal,
+    storeGenerateIdsForModuleModal
 } = applicationSlice.actions;
 
 export default applicationSlice.reducer;
