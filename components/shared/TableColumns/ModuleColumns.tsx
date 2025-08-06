@@ -85,6 +85,28 @@ export const moduleColumns: ColumnDef<any>[] = [
         },
     },
     {
+        accessorKey: "telx_model_number",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    TelX Model Number
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const module: any = row.original
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-center">{module?.telx_model_number}</span>
+                </div>
+            )
+        },
+    },
+    {
         accessorKey: "suffix",
         header: ({ column }) => {
             return (

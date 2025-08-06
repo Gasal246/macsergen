@@ -19,6 +19,9 @@ const formSchema = z.object({
   modal_number: z.string().min(2, {
     message: "Module name must be at least 2 characters.",
   }),
+  telx_model_number: z.string().min(2, {
+    message: "Telx Module name must be at least 2 characters."
+  }),
   suffix: z.string().min(3, {
     message: "Module Suffix must be at least 3 characters."
   }),
@@ -36,7 +39,7 @@ const formSchema = z.object({
   })
 })
 const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => void }) => {
-  const { isEdit, modelNumber, suffix, description, qty, chipset, ap_type, moduleId, moduleModal } = useSelector((state: RootState) => state.application);
+  const { isEdit, modelNumber, suffix, description, qty, chipset, ap_type, moduleId, moduleModal, telxModelNumber } = useSelector((state: RootState) => state.application);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -44,6 +47,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
     resolver: zodResolver(formSchema),
     defaultValues: {
       modal_number: modelNumber,
+      telx_model_number: telxModelNumber,
       suffix: suffix,
       description: description,
       qty: qty,
@@ -72,6 +76,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
         const res = await axios.post(`/api/module/edit`, {
           moduleId,
           model_number: values.modal_number,
+          telx_model_number: values.telx_model_number,
           suffix: values.suffix,
           description: values.description,
           qty: values.qty,
@@ -113,12 +118,28 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
                 name="modal_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-white'>Modal Number</FormLabel>
+                    <FormLabel className='text-white'>Model Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="Modal Number" className='text-white' {...field} />
+                      <Input placeholder="Model Number" className='text-white' {...field} />
                     </FormControl>
                     <FormDescription className='text-neutral-400 text-xs font-semibold'>
-                      Modal number is used to identify the module in the system.
+                      Model number is used to identify the module in the system.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="telx_model_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-white'>Telx Model Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Telx Model Number" className='text-white' {...field} />
+                    </FormControl>
+                    <FormDescription className='text-neutral-400 text-xs font-semibold'>
+                      Model number assigned by TelX.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

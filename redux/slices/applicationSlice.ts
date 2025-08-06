@@ -10,6 +10,7 @@ interface ApplicationState {
     isEdit: boolean;
     moduleId: string;
     moduleModal: boolean;
+    telxModelNumber: string;
     generateIdsModal: boolean;
     deleteModuleModal: boolean;
     generateIdsForModuleModal: boolean;
@@ -25,6 +26,7 @@ const initialState: ApplicationState = {
     isEdit: false,
     moduleId: "",
     moduleModal: false,
+    telxModelNumber: "",
     generateIdsModal: false,
     deleteModuleModal: false,
     generateIdsForModuleModal: false,
@@ -58,6 +60,9 @@ const applicationSlice = createSlice({
         storeModuleId: (state, action: PayloadAction<string>) => {
             state.moduleId = action.payload;
         },
+        storeTelxModelNumber: (state, action: PayloadAction<string>) => {
+            state.telxModelNumber = action.payload;
+        },
         storeGenerateIdsModal: (state, action: PayloadAction<boolean>) => {
             state.generateIdsModal = action.payload;
         },
@@ -82,6 +87,7 @@ export const {
     storeApType,
     storeIsEdit,
     storeModuleId,
+    storeTelxModelNumber,
     storeModuleModal,
     storeGenerateIdsModal,
     storeDeleteModuleModal,

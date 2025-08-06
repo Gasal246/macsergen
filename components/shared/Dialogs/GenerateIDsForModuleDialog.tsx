@@ -22,9 +22,12 @@ const formSchema = z.object({
         message: "Count must be at least 1.",
     }),
     isNew: z.boolean(),
+    regionId: z.string().min(1, {
+        message: "Region ID must be at least 1.",
+    })
 })
 
-const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, module: any }) => {
+const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { moduleId: string, module: any, getModulesFunction: () => void }) => {
     const { generateIdsForModuleModal } = useSelector((state: RootState) => state.application);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -38,6 +41,7 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
             module_id: moduleId,
             count: "",
             isNew: true,
+            regionId: ""
         },
     })
 
@@ -57,19 +61,49 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
         }
     }
 
+    async function onSave() {
+        setLoading(true);
+        try {
+            const res = await axios.post(`/api/module/saveids`, {
+                module_id: moduleId,
+                isNew: form.getValues().isNew,
+                macIds: generated?.macIds,
+                serialNumbers: generated?.serialNumbers,
+            });
+            if(res?.status === 200) {
+                toast.success("IDs saved successfully")
+                setIsSaved(true);
+                handleCloseDialog();
+                getModulesFunction();
+            }
+        } catch (error) {
+            toast.error("Something went wrong")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleCloseDialog = () => {
+        if(generated && !saved) {
+            toast.error("You haven't saved generated IDs");
+            const result = confirm("Are you sure want to close without saving? You may lose your generated IDs.")
+            if(!result) return;
+        }
+        form.reset()
+        setGenerated(null)
+        setIsSaved(false)
         dispatch(storeGenerateIdsForModuleModal(false));
     }
 
     return (
         <Dialog open={generateIdsForModuleModal} onOpenChange={handleCloseDialog}>
-            <DialogContent className='bg-zinc-800/30 backdrop-blur-sm min-w-[50%]'>
+            <DialogContent className='bg-zinc-800/30 backdrop-blur-sm min-w-[50%] max-h-[80%] overflow-y-scroll'>
                 <DialogHeader>
-                    <DialogTitle className='text-white'>Generate IDs</DialogTitle>
-                    <DialogDescription className='text-neutral-300 font-medium'>Generate MacIds and Serial Numbers for {module?.model_number}, {module?.description}.</DialogDescription>
+                    <DialogTitle className='text-white'>{generated ? "Take a look at generated IDs" : "Generate IDs"}</DialogTitle>
+                    <DialogDescription className='text-neutral-300 font-medium'>{generated ? "Please click on 'Save To Module' to save generated ids in database." : `Generate MacIds and Serial Numbers for ${module?.model_number}, ${module?.description}.`}</DialogDescription>
                 </DialogHeader>
                 <div>
-                    <Form {...form}>
+                    {!generated && <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <FormField
                                 control={form.control}
@@ -86,13 +120,26 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
                             />
                             <FormField
                                 control={form.control}
+                                name="regionId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className='text-white'>Enter Region ID</FormLabel>
+                                        <FormControl className='w-full lg:w-[50%]'>
+                                            <Input placeholder="Eg: AE" type="text" className='text-white' {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
                                 name="isNew"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm w-full lg:w-[50%]">
                                         <div className="space-y-0.5">
-                                            <FormLabel className='text-white'>{form.getValues().isNew ? "Generate New IDs" : "Generate IDs from Old IDs"}</FormLabel>
+                                            <FormLabel className='text-white'>{form.getValues().isNew ? "Generate New IDs" : "Concatinate With Previous IDs"}</FormLabel>
                                             <FormDescription className='text-neutral-400 text-xs font-semibold'>
-                                                {form.getValues().isNew ? "Generate New IDs" : "Generate IDs from Old IDs"}
+                                                {form.getValues().isNew ? "Generate New IDs" : "This will generate new Ids and you can concatinate them with old Ids"}
                                             </FormDescription>
                                         </div>
                                         <FormControl>
@@ -107,7 +154,26 @@ const GenerateIDsForModuleDialog = ({ moduleId, module }: { moduleId: string, mo
                             />
                             <Button type="submit" className='bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600 w-full lg:w-[50%] lg:ml-[25%]'>Generate IDs</Button>
                         </form>
-                    </Form>
+                    </Form>}
+                    {generated && <div className='flex flex-wrap'>
+                        <div className='w-full lg:w-1/2 p-1'>
+                            <h2 className='text-white font-semibold underline text-sm'>Mac Ids</h2>
+                            <div>
+                                {generated?.macIds?.map((item: any, index: number) => (
+                                    <p className='text-xs font-medium text-green-600' key={item}><span className='text-blue-500'>{index + 1}.</span> {item}</p>
+                                ))}
+                            </div>
+                        </div>
+                        <div className='w-full lg:w-1/2 p-1'>
+                            <h2 className='text-white font-semibold underline text-sm'>Serial Numbers</h2>
+                            <div>
+                                {generated?.serialNumbers?.map((item: any, index: number) => (
+                                    <p className='text-xs font-medium text-green-600' key={item}><span className='text-blue-500'>{index + 1}.</span> {item}</p>
+                                ))}
+                            </div>
+                        </div>
+                        <Button className='bg-gradient-to-br from-slate-900 to-blue-950 border border-transparent hover:border-slate-700 w-full lg:w-[50%] lg:ml-[25%] mt-8 cursor-pointer' onClick={onSave}>Save To Module</Button>
+                    </div>}
                 </div>
             </DialogContent>
         </Dialog>

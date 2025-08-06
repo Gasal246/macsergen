@@ -4,6 +4,10 @@ import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
+import axios from "axios";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { useRouter } from "next/navigation";
 
 export const macAddressColumns: ColumnDef<any>[] = [
     {
@@ -23,7 +27,7 @@ export const macAddressColumns: ColumnDef<any>[] = [
             const module: any = row.original
             return (
                 <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-center">{module?.mac_id}</span>
+                    <span className="text-sm font-bold text-center ">{module?.mac_address}</span>
                 </div>
             )
         },
@@ -43,9 +47,28 @@ export const macAddressColumns: ColumnDef<any>[] = [
         },
         cell: ({ row }) => {
             const module: any = row.original
+            const router = useRouter();
+            const handleAllocation = async () => {
+                try {
+                    const res = await axios.post(`/api/module/useids`, { type: "mac", id: module?._id, used: !module?.used });
+                    if (res.status === 200) {
+                        row.original.used = !module?.used;
+                        toast.success("MAC Address Updated");
+                        router.refresh();
+                    }
+                } catch (error) {
+                    console.log(error);
+                    toast.error("Failed to update MAC Address");
+                }
+            }
             return (
                 <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold text-center ${module?.used ? "text-green-600" : "text-neutral-800"}`}>{module?.used ? "Allocated" : "Unallocated"}</span>
+                    <span className={`text-sm font-semibold text-center`}>
+                    <Switch
+                      checked={module?.used}
+                      onCheckedChange={handleAllocation}
+                    />
+                    </span>
                 </div>
             )
         },

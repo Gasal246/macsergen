@@ -8,7 +8,8 @@ export async function POST ( req: NextRequest, res: NextResponse ) {
     try {
         const body = await req.json();
         await Modules.findByIdAndUpdate(body.moduleId, { 
-            model_number: body.modal_number, 
+            model_number: body.modal_number,
+            telx_model_number: body.telx_model_number,
             suffix: body.suffix,
             description: body.description,
             qty: body.qty,
