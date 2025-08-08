@@ -12,12 +12,13 @@ import axios from 'axios'
 import GenerateIDsForModuleDialog from './Dialogs/GenerateIDsForModuleDialog'
 import { Provider } from 'react-redux'
 import { store } from '@/redux/store'
-import { storeGenerateIdsForModuleModal } from '@/redux/slices/applicationSlice'
+import { storeBulkAllocateModal, storeGenerateIdsForModuleModal } from '@/redux/slices/applicationSlice'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
 import { Sheet } from 'lucide-react'
 import LoaderSpin from './Utility/LoaderSpin'
 import { generateExcel } from '@/lib/generateExcel'
+import BulkAllocationDialogue from './Dialogs/BulkAllocationDialogue'
 
 const GenerateIdOpener = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -26,6 +27,16 @@ const GenerateIdOpener = () => {
     };
     return (
         <Button className='mb-5 cursor-pointer bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600' onClick={handleOpenGenerateIdsModal}>Generate</Button>
+    )
+}
+
+const BulkAllocateOpener = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const handleOpenBulkAllocateModal = () => {
+        dispatch(storeBulkAllocateModal(true));
+    };
+    return (
+        <Button className='mb-5 cursor-pointer bg-gradient-to-br from-neutral-700 to-neutral-800 border border-transparent hover:border-neutral-600' onClick={handleOpenBulkAllocateModal}>Bulk Allocate</Button>
     )
 }
 
@@ -75,6 +86,7 @@ const ViewModule = ({ id }: { id: string }) => {
         <Provider store={store}>
             <div className='p-5 lg:p-10'>
                 <GenerateIDsForModuleDialog moduleId={id} module={module} getModulesFunction={fetchModule} />
+                <BulkAllocationDialogue moduleId={id} getModulesFunction={fetchModule} />
                 <div className="flex items-center justify-between">
                     <Link href=".."><Button className='mb-5 cursor-pointer border border-transparent hover:border-neutral-600'>{loading ? <div className="flex items-center gap-2"><LoaderSpin size={30} /> Loading...</div> : "Back To Modules"}</Button></Link>
                     <div className="flex items-center gap-2">
@@ -88,6 +100,7 @@ const ViewModule = ({ id }: { id: string }) => {
                 </div>
                 <div className='px-1 mb-1 mt-5 flex items-center justify-between'>
                     <h1 className="text-neutral-300 text-xl font-semibold">MAC Addresses & Serial Numbers</h1>
+                    <BulkAllocateOpener />
                 </div>
                 <div className="flex flex-wrap">
                     <div className="w-full lg:w-1/2 p-1">

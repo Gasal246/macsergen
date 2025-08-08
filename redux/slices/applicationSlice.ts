@@ -14,6 +14,7 @@ interface ApplicationState {
     generateIdsModal: boolean;
     deleteModuleModal: boolean;
     generateIdsForModuleModal: boolean;
+    bulkAllocateModal: boolean;
 }
 
 const initialState: ApplicationState = {
@@ -30,6 +31,7 @@ const initialState: ApplicationState = {
     generateIdsModal: false,
     deleteModuleModal: false,
     generateIdsForModuleModal: false,
+    bulkAllocateModal: false,
 }
 
 const applicationSlice = createSlice({
@@ -74,6 +76,9 @@ const applicationSlice = createSlice({
         },
         storeGenerateIdsForModuleModal: (state, action: PayloadAction<boolean>) => {
             state.generateIdsForModuleModal = action.payload;
+        },
+        storeBulkAllocateModal: (state, action: PayloadAction<boolean>) => {
+            state.bulkAllocateModal = action.payload;
         }
     },
 });
@@ -91,7 +96,8 @@ export const {
     storeModuleModal,
     storeGenerateIdsModal,
     storeDeleteModuleModal,
-    storeGenerateIdsForModuleModal
+    storeGenerateIdsForModuleModal,
+    storeBulkAllocateModal
 } = applicationSlice.actions;
 
 export default applicationSlice.reducer;
