@@ -22,8 +22,8 @@ const formSchema = z.object({
   telx_model_number: z.string().min(2, {
     message: "Telx Module name must be at least 2 characters."
   }),
-  suffix: z.string().min(3, {
-    message: "Module Suffix must be at least 3 characters."
+  suffix: z.string().min(2, {
+    message: "Module Suffix must be at least 2 characters."
   }),
   description: z.string().min(3, {
     message: "Module Description must be at least 3 characters."
