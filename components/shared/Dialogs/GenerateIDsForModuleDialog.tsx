@@ -22,9 +22,7 @@ const formSchema = z.object({
         message: "Count must be at least 1.",
     }),
     isNew: z.boolean(),
-    regionId: z.string().min(1, {
-        message: "Region ID must be at least 1.",
-    })
+    regionId: z.string().optional()
 })
 
 const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { moduleId: string, module: any, getModulesFunction: () => void }) => {
@@ -93,7 +91,7 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
 
     return (
         <Dialog open={generateIdsForModuleModal} onOpenChange={handleCloseDialog}>
-            <DialogContent className='bg-zinc-800/30 backdrop-blur-sm min-w-[50%] max-h-[80%] overflow-y-scroll'>
+            <DialogContent className='bg-zinc-800/30 backdrop-blur-sm min-w-[50%] lg:min-w-[30%] max-h-[80%] overflow-y-scroll'>
                 <DialogHeader>
                     <DialogTitle className='text-white'>{generated ? "Take a look at generated IDs" : "Generate IDs"}</DialogTitle>
                     <DialogDescription className='text-neutral-300 font-medium'>{generated ? "Please click on 'Save To Module' to save generated ids in database." : `Generate MacIds and Serial Numbers for ${module?.model_number}, ${module?.description}.`}</DialogDescription>
@@ -107,31 +105,31 @@ const GenerateIDsForModuleDialog = ({ moduleId, module, getModulesFunction }: { 
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className='text-white'>Enter Count</FormLabel>
-                                        <FormControl className='w-full lg:w-[50%]'>
+                                        <FormControl className='w-full'>
                                             <Input placeholder="No. of IDs Required" type="number" className='text-white' {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="regionId"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className='text-white'>Enter Region ID</FormLabel>
-                                        <FormControl className='w-full lg:w-[50%]'>
+                                        <FormControl className='w-full'>
                                             <Input placeholder="Eg: AE" type="text" className='text-white' {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             <FormField
                                 control={form.control}
                                 name="isNew"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm w-full lg:w-[50%]">
+                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm w-full">
                                         <div className="space-y-0.5">
                                             <FormLabel className='text-white'>{form.getValues().isNew ? "Generate New IDs" : "Concatinate With Previous IDs"}</FormLabel>
                                             <FormDescription className='text-neutral-400 text-xs font-semibold'>

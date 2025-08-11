@@ -22,9 +22,7 @@ const formSchema = z.object({
   telx_model_number: z.string().min(2, {
     message: "Telx Module name must be at least 2 characters."
   }),
-  suffix: z.string().min(3, {
-    message: "Module Suffix must be at least 3 characters."
-  }),
+  suffix: z.string().optional(),
   description: z.string().min(3, {
     message: "Module Description must be at least 3 characters."
   }),
@@ -105,7 +103,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
 
   return (
     <Dialog open={moduleModal} onOpenChange={() => dispatch(storeModuleModal(false))}>
-      <DialogContent className='bg-zinc-800/30 backdrop-blur-sm lg:min-w-[50%] max-h-[80%] overflow-y-auto'>
+      <DialogContent className='bg-zinc-800/30 backdrop-blur-sm min-w-[50%] lg:min-w-[35%] max-h-[80%] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle className='text-white'>{isEdit ? "Edit" : "Add"} Module</DialogTitle>
           <DialogDescription>Please {isEdit ? "fill" : "update"} the form below to {isEdit ? "edit" : "add"} {isEdit ? "this" : "a new"} module.</DialogDescription>
@@ -145,7 +143,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="suffix"
                 render={({ field }) => (
@@ -160,7 +158,7 @@ const AddModulesDialogue = ({ getModulesFunction }: { getModulesFunction: () => 
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="description"

@@ -24,16 +24,16 @@ export async function POST(req: NextRequest ) {
                 count: body?.count,
                 lastMac: lastMac[0]?.mac_address || null,
                 lastSerial: lastSerialNumber[0]?.serial_number || null,
-                suffix: module?.suffix || '',
-                regionId: body?.regionId
+                suffix: module?.telx_model_number || '',
+                regionId: body?.regionId || ''
             });
         } else {
             generated = generateDeviceIdentifiers({
                 count: body?.count,
                 lastMac: lastMac[0]?.mac_address || null,
                 lastSerial: lastSerialNumber[0]?.serial_number || null,
-                suffix: module?.suffix || '',
-                regionId: body?.regionId
+                suffix: module?.telx_model_number || '',
+                regionId: body?.regionId || ''
             });
         }
 

@@ -48,28 +48,28 @@ export const moduleShowColumns: ColumnDef<any>[] = [
             )
         },
     },
-    {
-        accessorKey: "suffix",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Suffix SN
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-        cell: ({ row }) => {
-            const module: any = row.original
-            return (
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-center">{module?.suffix}</span>
-                </div>
-            )
-        },
-    },
+    // {
+    //     accessorKey: "suffix",
+    //     header: ({ column }) => {
+    //         return (
+    //             <Button
+    //                 variant="ghost"
+    //                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //             >
+    //                 Suffix SN
+    //                 <ArrowUpDown className="ml-2 h-4 w-4" />
+    //             </Button>
+    //         )
+    //     },
+    //     cell: ({ row }) => {
+    //         const module: any = row.original
+    //         return (
+    //             <div className="flex items-center gap-2">
+    //                 <span className="text-sm font-semibold text-center">{module?.suffix}</span>
+    //             </div>
+    //         )
+    //     },
+    // },
     {
         accessorKey: "description",
         header: ({ column }) => {

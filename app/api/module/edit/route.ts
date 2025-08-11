@@ -10,7 +10,7 @@ export async function POST ( req: NextRequest ) {
         await Modules.findByIdAndUpdate(body.moduleId, { 
             model_number: body.modal_number,
             telx_model_number: body.telx_model_number,
-            suffix: body.suffix,
+            suffix: body.suffix || '',
             description: body.description,
             qty: body.qty,
             chipset: body.chipset,
